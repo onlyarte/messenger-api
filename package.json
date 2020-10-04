@@ -1,0 +1,31 @@
+{
+  "name": "messenger-api",
+  "version": "1.0.0",
+  "description": "Messenger API",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "start-watch": "nodemon",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/onlyarte/rime-messenger.git"
+  },
+  "author": "Ruslan Purii",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/onlyarte/messenger-api/issues"
+  },
+  "homepage": "https://github.com/onlyarte/messenger-api#readme",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "graphql-subscriptions": "^1.1.0",
+    "graphql-yoga": "^1.18.3",
+    "mongoose": "^5.9.28",
+    "mongoose-lean-virtuals": "^0.6.8"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}

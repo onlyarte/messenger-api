@@ -1,0 +1,69 @@
+type Query {
+  title: String!
+  me: User!
+  users(query: String): [User!]!
+  chat(id: ID, link: String): Chat!
+  chats: [Chat!]!
+  message(id: ID!): Message!
+  messages(chat: ID!, search: String, offset: Int = 0, limit: Int = 50): [Message!]!
+}
+
+type Mutation {
+  startChat(name: String, members: [ID!], link: String, isPublic: Boolean): Chat!
+  leaveChat(chat: ID!): Chat!
+  addChatMember(chat: ID!, member: ID!): Chat!
+  removeChatMember(chat: ID!, member: ID!): Chat!
+  assignChatAdmin(chat: ID!, admin: ID!): Chat!
+  renameChat(chat: ID!, name: String!): Chat!
+  sendMessage(chat: ID!, text: String!): Message!
+  readMessages(chat: ID!, messages: [ID!]!): [Message!]!
+  # readMessages(chat: ID!): Int!
+}
+
+type Subscription {
+  newChat: Chat!
+  joinedChat: ChatMember!
+  leftChat(chat: ID): ChatMember!
+  newMessage(chat: ID): Message!
+}
+
+type User {
+  _id: ID!
+  username: String!
+  firstName: String!
+  lastName: String!
+  fullName: String!
+  isEnabled: Boolean
+  chats: [Chat!]!
+}
+
+type Chat {
+  _id: ID!
+  name: String
+  link: String
+  isPublic: Boolean
+  memberIds: [ID!]!
+  members: [User!]!
+  adminIds: [ID!]!
+  admins: [User!]!
+  messages(search: String, offset: Int = 0, limit: Int = 50): [Message!]!
+  lastMessage: Message
+  updatedAt: String!
+}
+
+type Message {
+  _id: ID!
+  senderId: ID!
+  sender: User!
+  chatId: ID!
+  chat: Chat!
+  text: String
+  createdAt: String!
+  isNew: Boolean!
+  offset: Int
+}
+
+type ChatMember {
+  chat: Chat!
+  member: User!
+}
