@@ -1,6 +1,7 @@
 const config = require('./config');
 const { GraphQLServer, PubSub } = require('graphql-yoga');
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
 const resolvers = require('./resolvers');
 
 mongoose
@@ -21,13 +22,14 @@ const server = new GraphQLServer({
     );
     return { request, response, connection, session, pubsub };
   },
-  middlewares: [
-    (resolve, root, args, context, info) => {
-      if (context.session && context.session.userId)
-        return resolve(root, args, context, info);
-      else throw new Error('Unauthorized');
-    },
-  ],
+  // middlewares: [
+  //   (resolve, root, args, context, info) => {
+  //     // Require authorization for all requests
+  //     if (context.session && context.session.userId)
+  //       return resolve(root, args, context, info);
+  //     else throw new Error('Unauthorized');
+  //   },
+  // ],
 });
 
 const options = {

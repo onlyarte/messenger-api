@@ -157,6 +157,8 @@ async function readMessages(parent, args, context, info) {
 }
 
 module.exports = {
+  signup,
+  login,
   startChat,
   leaveChat,
   addChatMember,
