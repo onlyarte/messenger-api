@@ -14,11 +14,9 @@ const userSchema = new Schema({
   },
   firstName: {
     type: Types.String,
-    required: true,
   },
   lastName: {
     type: Types.String,
-    required: true,
   },
   isEnabled: {
     type: Types.Boolean,

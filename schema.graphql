@@ -9,6 +9,8 @@ type Query {
 }
 
 type Mutation {
+  signup(username: String!, password: String!, firstName: String, lastName: String): AuthPayload!
+  login(username: String!, password: String!): AuthPayload!
   startChat(name: String, members: [ID!], link: String, isPublic: Boolean): Chat!
   leaveChat(chat: ID!): Chat!
   addChatMember(chat: ID!, member: ID!): Chat!
@@ -66,4 +68,9 @@ type Message {
 type ChatMember {
   chat: Chat!
   member: User!
+}
+
+type AuthPayload {
+  token: String!
+  user: User!
 }

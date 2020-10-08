@@ -1,7 +1,30 @@
 const { Types } = require('mongoose');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const config = require('../config');
 const Chat = require('../models/Chat');
 const User = require('../models/User');
 const Message = require('../models/Message');
+
+async function signup(parent, args, context, info) {
+  const password = await bcrypt.hash(args.password, 10);
+  const user = new User({
+    ...args,
+    password,
+  });
+  await user.save();
+  const token = jwt.sign({ userId: user._id }, config.jwtSecret);
+  return { token, user };
+}
+
+async function login(parent, args, context, info) {
+  const user = await User.findOne({ username: args.username }).lean();
+  if (!user) throw new Error('User not found');
+  const isPasswordCorrect = await bcrypt.compare(user.password, args.password);
+  if (!isPasswordCorrect) throw new Error('Wrong password');
+  const token = jwt.sign({ userId: user._id }, config.jwtSecret);
+  return { token, user };
+}
 
 async function startChat(parent, args, context, info) {
   const { name, link, isPublic, members: memberIds } = args;

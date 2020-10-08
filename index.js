@@ -14,7 +14,11 @@ const server = new GraphQLServer({
   typeDefs: './schema.graphql',
   resolvers,
   context: async ({ request, response, connection }) => {
-    // auth
+    const Authorization = request.get('Authorization');
+    const session = Authorization && jwt.verify(
+      Authorization.replace('Bearer ', ''),
+      config.jwtSecret
+    );
     return { request, response, connection, session, pubsub };
   },
   middlewares: [
