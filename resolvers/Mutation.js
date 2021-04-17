@@ -20,7 +20,7 @@ async function signup(parent, args, context, info) {
 async function login(parent, args, context, info) {
   const user = await User.findOne({ username: args.username }).lean();
   if (!user) throw new Error('User not found');
-  const isPasswordCorrect = await bcrypt.compare(user.password, args.password);
+  const isPasswordCorrect = await bcrypt.compare(args.password, user.password);
   if (!isPasswordCorrect) throw new Error('Wrong password');
   const token = jwt.sign({ userId: user._id }, config.jwtSecret);
   return { token, user };
