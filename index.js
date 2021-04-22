@@ -15,11 +15,11 @@ const server = new GraphQLServer({
   typeDefs: './schema.graphql',
   resolvers,
   context: async ({ request, response, connection }) => {
-    const Authorization = request.get('Authorization');
-    const session = Authorization && jwt.verify(
-      Authorization.replace('Bearer ', ''),
-      config.jwtSecret
-    );
+    const authorization =
+      (request && request.headers.authorization) ||
+      (connection && connection.context.Authorization);
+    const token = authorization && authorization.replace('Bearer ', '');
+    const session = token && jwt.verify(token, config.jwtSecret);
     return { request, response, connection, session, pubsub };
   },
   // middlewares: [
