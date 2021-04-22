@@ -20,6 +20,7 @@ type Mutation {
   sendMessage(chat: ID!, text: String!): Message!
   readMessages(chat: ID!, messages: [ID!]!): [Message!]!
   # readMessages(chat: ID!): Int!
+  subscribeToNotifications(pushToken: String!): Boolean!
 }
 
 type Subscription {

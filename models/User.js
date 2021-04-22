@@ -22,6 +22,10 @@ const userSchema = new Schema({
     type: Types.Boolean,
     default: false,
   },
+  pushTokens: {
+    type: [Types.String],
+    default: [],
+  },
 });
 
 module.exports = mongoose.model('User', userSchema);

@@ -1,10 +1,13 @@
 const { Types } = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { Expo } = require('expo-server-sdk');
 const config = require('../config');
 const Chat = require('../models/Chat');
 const User = require('../models/User');
 const Message = require('../models/Message');
+
+const expo = new Expo();
 
 async function signup(parent, args, context, info) {
   const password = await bcrypt.hash(args.password, 10);
@@ -117,6 +120,7 @@ async function renameChat(parent, args, context, info) {
 }
 
 async function sendMessage(parent, args, context, info) {
+  const sender = await User.findById(context.session.userId).lean();
   const chat = await Chat.findById(args.chat);
   if (!chat.memberIds.some(id => id.equals(context.session.userId))) {
     if (chat.isPublic) {
@@ -133,6 +137,32 @@ async function sendMessage(parent, args, context, info) {
   });
   await message.save();
   context.pubsub.publish('new message', { newMessage: message });
+
+  const notifications = [];
+  for (const memberId of chat.memberIds) {
+    if (memberId.equals(message.senderId)) continue;
+    const receiver = await User.findById(memberId);
+    for (const pushToken of receiver.pushTokens) {
+      if (!Expo.isExpoPushToken(pushToken)) continue;
+      console.log('sending a notification');
+      notifications.push({
+        to: pushToken,
+        sound: 'default',
+        title: `New message from ${sender.firstName} ${sender.lastName}`,
+        body: message.text || '📎 attachment',
+      });
+    }
+  }
+
+  const chunks = expo.chunkPushNotifications(notifications);
+  for (const chunk of chunks) {
+    try {
+      await expo.sendPushNotificationsAsync(chunk);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   return message;
 }
 
@@ -156,6 +186,14 @@ async function readMessages(parent, args, context, info) {
   // return res.nModified;
 }
 
+async function subscribeToNotifications(parent, args, context, info) {
+  const user = await User.findById(context.session.userId);
+  user.pushTokens.push(args.pushToken);
+  await user.save();
+  console.log('subscribed to notifications');
+  return true;
+}
+
 module.exports = {
   signup,
   login,
@@ -167,4 +205,5 @@ module.exports = {
   renameChat,
   sendMessage,
   readMessages,
+  subscribeToNotifications,
 };

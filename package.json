@@ -21,6 +21,7 @@
   "dependencies": {
     "bcrypt": "^5.0.0",
     "dotenv": "^8.2.0",
+    "expo-server-sdk": "^3.6.0",
     "graphql-subscriptions": "^1.1.0",
     "graphql-yoga": "^1.18.3",
     "jsonwebtoken": "^8.5.1",
