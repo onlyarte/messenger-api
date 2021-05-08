@@ -32,7 +32,9 @@ async function chat(parent, args, context, info) {
 }
 
 async function chats(parent, args, context, info) {
-  return Chat.find({ memberIds: { $elemMatch: { $eq: context.session.userId } } });
+  return Chat.find({
+    memberIds: { $elemMatch: { $eq: context.session.userId } },
+  }).sort({ updatedAt: -1 });
 }
 
 async function message(parent, args, context, info) {

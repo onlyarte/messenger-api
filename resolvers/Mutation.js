@@ -144,7 +144,6 @@ async function sendMessage(parent, args, context, info) {
     const receiver = await User.findById(memberId);
     for (const pushToken of receiver.pushTokens) {
       if (!Expo.isExpoPushToken(pushToken)) continue;
-      console.log('sending a notification');
       notifications.push({
         to: pushToken,
         sound: 'default',
@@ -190,7 +189,6 @@ async function subscribeToNotifications(parent, args, context, info) {
   const user = await User.findById(context.session.userId);
   user.pushTokens.push(args.pushToken);
   await user.save();
-  console.log('subscribed to notifications');
   return true;
 }
 
