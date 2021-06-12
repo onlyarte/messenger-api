@@ -15,12 +15,11 @@ jobs:
       GCP_SA_KEY_PATH: './gcp-key.json'
 
     steps:
-      - uses: actions/setup-node@latest
+      - uses: actions/setup-node@v2
         with:
-          node-version: '12'
+          node-version: '14'
 
-      - name: 'Checkout Repo'
-        uses: actions/checkout@latest
+      - uses: actions/checkout@v2
         with:
           fetch-depth: 20
 
