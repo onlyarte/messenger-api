@@ -17,6 +17,9 @@ jobs:
       # https://cloud.google.com/docs/authentication/getting-started#setting_the_environment_variable
       GOOGLE_APPLICATION_CREDENTIALS: './gcp-key.json'
 
+      CLOUDSDK_CORE_PROJECT: remessage-dev
+      STAGE: production
+
     steps:
       - uses: actions/setup-node@v2
         with:
@@ -44,5 +47,5 @@ jobs:
 
       - name: Deploy to GCP
         run: |
-          npm run config:dev
+          node set-dotenv.js
           gcloud app deploy app-develop.yml
