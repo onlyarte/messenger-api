@@ -20,7 +20,9 @@ jobs:
           node-version: '12'
 
       - name: Authenticate to GCP
-        run: gcloud auth activate-service-account --key-file $GCP_SA_KEY
+        run: |
+          echo "${{ secrets.GCLOUD_AUTH_DEV }}" | base64 --decode > $GCP_SA_KEY
+          gcloud auth activate-service-account --key-file $GCP_SA_KEY
 
       - name: Install Dependencies
         run: npm ci
