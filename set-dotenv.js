@@ -1,20 +1,15 @@
 const fs = require('fs');
-
 const { SecretManagerServiceClient } = require('@google-cloud/secret-manager');
-
-if (!process.env.CLOUDSDK_CORE_PROJECT) {
-  console.error('CLOUDSDK_CORE_PROJECT is not defined');
-  process.exit(1);
-}
 
 const project = process.env.CLOUDSDK_CORE_PROJECT;
 const stage = process.env.STAGE;
 
-const client = new SecretManagerServiceClient();
+const availableStages = ['dev', 'staging', 'production'];
 
 async function fetchSecret(secretName) {
   const name = `projects/${project}/secrets/${secretName}/versions/latest`;
 
+  const client = new SecretManagerServiceClient();
   const [version] = await client.accessSecretVersion({
     name,
   });
@@ -24,19 +19,22 @@ async function fetchSecret(secretName) {
   return payload;
 }
 
-async function downloadEnvironmentVariables(secretName, fileName = '.env') {
+async function writeDotenv(secretName, fileName = '.env') {
   fs.writeFileSync(fileName, await fetchSecret(secretName));
 }
 
 async function main() {
-  const availableStages = ['dev', 'staging', 'production'];
+  if (!project) {
+    throw new Error('CLOUDSDK_CORE_PROJECT is not defined');
+  }
+
   if (!stage) {
     throw new Error('STAGE is not defined');
   } else if (!availableStages.includes(stage)) {
     throw new Error(`STAGE "${stage}" is not in available`);
   }
 
-  await downloadEnvironmentVariables(`${stage}-dotenv`);
+  await writeDotenv(`${stage}-dotenv`);
 }
 
 main().catch((err) => {
