@@ -9,10 +9,9 @@ jobs:
   deploy:
     name: Deploy to GCP
     runs-on: ubuntu-latest
+    environment: dev
 
     env:
-      CLOUDSDK_CORE_PROJECT: 'remessage-dev'
-      STAGE: 'dev'
       GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
 
     steps:
