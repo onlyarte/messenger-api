@@ -12,7 +12,7 @@ jobs:
     environment: dev
 
     env:
-      GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+      GCP_SA_KEY_PATH: './gcp-key.json'
 
     steps:
       - uses: actions/setup-node@v2-beta
@@ -21,8 +21,8 @@ jobs:
 
       - name: Authenticate to GCP
         run: |
-          echo "${{ secrets.GCLOUD_AUTH_DEV }}" | base64 --decode > $GCP_SA_KEY
-          gcloud auth activate-service-account --key-file $GCP_SA_KEY
+          echo "${{ secrets.GCP_SA_KEY }}" | base64 --decode > $GCP_SA_KEY_PATH
+          gcloud auth activate-service-account --key-file $GCP_SA_KEY_PATH
 
       - name: Install Dependencies
         run: npm ci
