@@ -40,4 +40,6 @@ jobs:
       #   run: npx eslint ./ --ext .js
 
       - name: Deploy to GCP
-        run: npm run deploy:dev
+        run: |
+          npm run config:dev
+          gcloud app deploy app-develop.yml
