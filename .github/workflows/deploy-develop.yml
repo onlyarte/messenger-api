@@ -31,10 +31,11 @@ jobs:
       - name: Install Dependencies
         run: npm ci
       
-      - name: Test
-        run: npm test
+      # Enable once testing is set up.
+      # - name: Test
+      #   run: npm test
 
-      # Enable after the errors fixed.
+      # Enable once the errors are fixed.
       # - name: Eslint
       #   run: npx eslint ./ --ext .js
 
