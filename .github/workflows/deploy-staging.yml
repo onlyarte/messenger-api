@@ -1,0 +1,51 @@
+# https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
+
+name: Deploy Staging
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    name: Deploy to GCP
+    runs-on: ubuntu-latest
+    environment: staging
+
+    env:
+      # https://cloud.google.com/docs/authentication/getting-started#setting_the_environment_variable
+      GOOGLE_APPLICATION_CREDENTIALS: './gcp-key.json'
+
+      CLOUDSDK_CORE_PROJECT: remessage-staging
+      STAGE: staging
+
+    steps:
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 20
+
+      - name: Authenticate to GCP
+        run: |
+          echo "${{ secrets.GCP_SA_KEY }}" | base64 --decode > $GOOGLE_APPLICATION_CREDENTIALS
+          gcloud auth activate-service-account --key-file $GOOGLE_APPLICATION_CREDENTIALS
+
+      - name: Install Dependencies
+        run: npm ci
+      
+      # Enable once testing is set up.
+      # - name: Test
+      #   run: npm test
+
+      # Enable once the errors are fixed.
+      # - name: Eslint
+      #   run: npx eslint ./ --ext .js
+
+      - name: Deploy to GCP
+        run: |
+          node set-dotenv.js
+          gcloud app deploy app-staging.yml

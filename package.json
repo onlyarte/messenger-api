@@ -8,7 +8,11 @@
     "start-watch": "nodemon",
     "test": "echo \"Error: no test specified\" && exit 1",
     "config:dev": "CLOUDSDK_CORE_PROJECT=remessage-dev STAGE=dev node set-dotenv.js",
-    "deploy:dev": "gcloud config set project remessage-dev && config:dev && gcloud app deploy app-dev.yml"
+    "config:staging": "CLOUDSDK_CORE_PROJECT=remessage-staging STAGE=staging node set-dotenv.js",
+    "config:production": "CLOUDSDK_CORE_PROJECT=remessage-production STAGE=production node set-dotenv.js",
+    "deploy:dev": "gcloud config set project remessage-dev && npm run config:dev && gcloud app deploy app-develop.yml",
+    "deploy:staging": "gcloud config set project remessage-staging && npm run config:staging && gcloud app deploy app-staging.yml",
+    "deploy:production": "gcloud config set project remessage-production && npm run config:production && gcloud app deploy app-production.yml"
   },
   "repository": {
     "type": "git",
